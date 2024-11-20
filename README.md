@@ -1,13 +1,10 @@
 # bitmask
-This repository provides a set of scripts for securely exchanging files and text messages using Public Key Infrastructure (PKI) and symmetric encryption. For small files and text messages we can use asymmetric encryption directly but larger files like binaries, images and videos demand a different solution for which we use hybrid encryption.  
+This repository provides a set of scripts for securely storing, exchanging files and messages using Public Key Infrastructure (PKI) and symmetric encryption. For small files and text messages we can use asymmetric encryption directly but larger files like binaries, images and videos demand a different solution for which we use hybrid encryption scheme.  
 
 For asymmetric encryption, I use a 2048-bit RSA keypair with the private key further encrypted by AES-256 cipher. This adds an additional layer of security so that private key files cannot be read in plain text on the filesystem and mitigates risk of data breach in case of key leaks. The private key can be used for decryption with a passphrase.
 
 > [!CAUTION]
-> Keep your private key with yourself only. Don't share it with anyone.
-
-> [!CAUTION]
-> Keep your private key safe. There is no way to recover your data if you erase/modify your private key or forget your key passphrase.
+> Keep your private key and keyphrase safe and don't share it with anyone.
 
 > [!WARNING]
 > Don't set a predictable or short passphrase. Your encrypted data may be compromised in event of a key leak.
@@ -16,7 +13,7 @@ Symmetric encryption uses random base64 encoded keyphrase. Note that this is not
 
 ## How it works
 ### You send me a file
-- Generate a PKI keypair **generate/generate_pki_keypaur.py** if you don't already have one
+- Generate a PKI keypair **generate/generate_pki_keypair.py** if you don't already have one
 - Share the public key with it's sha256 fingerprint over [email](amoldhamale1105@gmail.com)
 - Decrypt the received file `*.apg` from me with your private key using **decrypt/pki_decrypt.py**
 - Encrypt the file you want to send me with the decrypted `*.bin` keyphrase file using **encrypt/encrypt_file.py**
@@ -28,5 +25,9 @@ Symmetric encryption uses random base64 encoded keyphrase. Note that this is not
 - Share the encrypted keyphrase file with it's sha256 fingerprint over [email](amoldhamale1105@gmail.com)
 - Decrypt the received file `*.enc` from me with your keyphrase file using **decrypt/decrypt_file.py**
 
-> [!NOTE]
-> These scripts have been validated on Linux, yet to be tested on Windows, Mac and BSD but the whole purpose of writing it in python was to make it platform agnostic. Feel free to test them on other platforms and create issues/pull requests accordingly.  
+You can use these scripts for secure storage by encrypting the files on your computer or hard drive. For encrcypting files you can generate a keyphrase for yourself and symmetrically encrypt the files with it. Once done, you can encrypt the keyphrase file with your public key. For decryption of your encrypted files, you will first need to decrypt the keyphrase file with your private key and associated passphrase. Use the decrypted keyphrase to symmetrically decrypt the encrypted files.  
+
+It's a good practice to destroy the raw keyphrase file once it's usage is over and it is safely encrypted since it poses a significantly higher risk of your files being exposed being the only key required to both encrypt and decrypt your data.  
+
+## Contribution
+With openssl installed, these scripts work out of box on Linux, expected to work out of box on BSD and Mac but remains to be tested. I will need support in making it work out of box on Windows. The whole purpose of writing it in python was to make it portable. Feel free to test on other platforms and create issues/pull requests accordingly.  
